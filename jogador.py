@@ -7,25 +7,33 @@ class Jogador:
         w, h = pygame.display.get_surface().get_size()
         self.pos = Vector2(w // 2, h // 2)
         self.vida = 10
-        self.vel = 20
+        self.vel = 5
         self.ponto = 0
         self.block = pygame.Rect(self.pos.x, self.pos.y, 20, 20)
         self.morto = False
 
     def movimentacao(self, tecla):
         if tecla == pygame.K_UP and self.pos.y > 0:
+            print(1)
             self.pos.y -= self.vel
 
         if tecla == pygame.K_RIGHT and self.pos.x < 800:
+            print(2)
             self.pos.x += self.vel
 
         if tecla == pygame.K_DOWN and self.pos.y < 450:
+            print(3)
             self.pos.y += self.vel
 
         if tecla == pygame.K_LEFT and self.pos.x > 0:
+            print(4)
             self.pos.x -= self.vel
 
     def draw_jogador(self):
+        x_pos = self.pos.x
+        y_pos = self.pos.y
+
+        self.block = pygame.Rect(x_pos, y_pos, 20, 20)
         pygame.draw.rect(pygame.display.get_surface(), (183, 111, 122), self.block)
 
     def colisao_inimigos(self, enemy):

@@ -18,27 +18,34 @@ if __name__ == '__main__':
     SCREEN_HEIGHT = 22.5
 
     clock = pygame.time.Clock()
+    clock.tick(30)
 
     inimigo = pygame.Rect(10, 10, 20, 20)
     item_vel = pygame.Rect(40, 40, 20, 20)
     item_vida = pygame.Rect(70, 70, 20, 20)
     item_ponto = pygame.Rect(100, 100, 20, 20)
 
-    screen = pygame.display.set_mode([unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT])
+    screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
+    pygame.display.set_caption('playground')
+
     running = True
 
     pygame.init()
 
     jogo = Main()
 
-    pygame.display.set_caption('playground')
 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        tecla = pygame.key.get_pressed()
-        jogo.update([inimigo], [item_vel], [item_vida], [item_vel], tecla)
-        jogo.draw_elementos()
+            if event.type == pygame.KEYDOWN:
+                jogo.update([inimigo], [item_vel], [item_vida], [item_ponto], event.key)
+
+        pygame.display.update()
         screen.fill((255, 255, 255))
+        tecla = pygame.event
+        print(jogo.jogador.pos)
+        jogo.draw_elementos()
+        
