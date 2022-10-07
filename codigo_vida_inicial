@@ -1,0 +1,8 @@
+import pygame
+import random
+import main
+
+class Vida:
+    def __init__(self):
+        posicao_vida = (random.randint(0, largura_tela), random.randint(0, altura_tela))
+        pygame.draw.rect(tela, (250, 5, 180), (posicao_vida[0], posicao_vida[1], 12, 12))
