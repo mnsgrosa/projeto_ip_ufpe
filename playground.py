@@ -51,4 +51,4 @@ if __name__ == '__main__':
         print(jogo.jogador.pos)
         jogo.draw_elementos()
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick()
