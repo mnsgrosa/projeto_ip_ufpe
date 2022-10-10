@@ -5,9 +5,12 @@ from jogador import Jogador
 class Main:
     def __init__(self):
         self.jogador = Jogador()
+        self.next_move = pygame.time.get_ticks() + 100
 
     def update(self, inimigos, items_vel, items_vida, items_ponto, tecla):
-        self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
+        if pygame.time.get_ticks() >= self.next_move: 
+            self.next_move = pygame.time.get_ticks() + 100
+            self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
 
     def draw_elementos(self):
         self.jogador.draw_jogador()
@@ -40,12 +43,12 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
 
-            if event.type == pygame.KEYDOWN:
-                jogo.update([inimigo], [item_vel], [item_vida], [item_ponto], event.key)
+        tecla = pygame.key.get_pressed()        
+        jogo.update([inimigo], [item_vel], [item_vida], [item_ponto], tecla)
 
         pygame.display.update()
         screen.fill((255, 255, 255))
-        tecla = pygame.event
         print(jogo.jogador.pos)
         jogo.draw_elementos()
-        
+        pygame.display.flip()
+        clock.tick(30)
