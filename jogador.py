@@ -81,7 +81,6 @@ class Jogador:
     # metodo de atualizacao de estado de jogo
     def game_over(self):
         if self.vida <= 0:
-            print('morri')
             self.morto = True
 
     # metodo que invoca os outros metodos para atualizar o jogo
