@@ -1,6 +1,7 @@
 import pygame, sys
 from pygame.math import Vector2
 from jogador import Jogador
+import numpy as np
 
 # Classe que ira conter todos os objetos
 class Main:
@@ -40,17 +41,21 @@ if __name__ == '__main__':
 
 
     while running:
+        antiga_pontuacao = jogo.jogador.ponto
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
         
+        print(jogo.jogador.ponto, jogo.jogador.vel)
 
         if jogo.jogador.morto:
                 running = False
 
-
         tecla = pygame.key.get_pressed()        
         jogo.update([inimigo], [item_vel], [item_vida], [item_ponto], tecla)
+        
+        if jogo.jogador.ponto != antiga_pontuacao:
+            item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade), np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
 
         pygame.display.update()
         screen.fill((255, 255, 255))
@@ -60,4 +65,4 @@ if __name__ == '__main__':
         pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.draw.rect(pygame.display.get_surface(), (0, 123, 122), inimigo)
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)

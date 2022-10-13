@@ -77,6 +77,7 @@ class Jogador:
                 lista_colisao.append(False)
         if True in lista_colisao:
             self.ponto += 10
+            return True
 
     # metodo de atualizacao de estado de jogo
     def game_over(self):
@@ -91,3 +92,4 @@ class Jogador:
         self.colisao_item_ponto(items_ponto)
         self.game_over()
         self.movimentacao(tecla)
+        return self.colisao_item_vel(items_vel)
