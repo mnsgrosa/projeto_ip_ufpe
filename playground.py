@@ -25,6 +25,8 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     clock.tick(60)
 
+    bg = pygame.image.load("background.png")
+
     inimigo = pygame.Rect(10, 10, 20, 20)
     item_vel = pygame.Rect(40, 10, 20, 20)
     item_vida = pygame.Rect(70, 10, 20, 20)
@@ -59,6 +61,7 @@ if __name__ == '__main__':
 
         pygame.display.update()
         screen.fill((255, 255, 255))
+        screen.blit(bg, (0, 0))
         jogo.draw_elementos()
         pygame.draw.rect(pygame.display.get_surface(), (255, 0, 0), item_vel)
         pygame.draw.rect(pygame.display.get_surface(), (0, 255, 0), item_vida)
