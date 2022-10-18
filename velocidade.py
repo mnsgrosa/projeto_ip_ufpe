@@ -6,21 +6,33 @@ tela = pygame.display.get_surface()
 
 class Velocidade:
     def __init__(self):
-        self.duracao_boost = pygame.time.get_ticks() + 1000
+        # Inicia o objeto com um contador para controlar o intervalo de spawn
+        # O objeto também possui uma variável para checar se o objeto já está spawnado
+        self.tela = pygame.display.get_surface()
+        self.largura_tela, self.altura_tela = pygame.display.get_surface().get_size()
         self.tempo_spawn = 0
         self.existe_sprite = False
-        self.boost_ativo = False
-    def spawn_velocidade(self):
+        self.pos = Vector2(random.randint(0, self.largura_tela - 12), random.randint(0, self.altura_tela - 12))
+        self.block = pygame.Rect(self.pos.x, self.pos.y, 12, 12)
+        duracao_boost = False
+        boost_ativo = False
+
+    def spawn_vida(self, status):
         if self.existe_sprite:
-
+            # Caso já exista um objeto spawnado, o objeto tem seu contador zerado
             self.tempo_spawn = 0
-        elif not self.existe_sprite and self.tempo_spawn < 900:
-
+        elif not self.existe_sprite and self.tempo_spawn < 600:
+            # Caso não exista um objeto spawnado, o contador aumentará até o tempo definido
             self.tempo_spawn += 1
-        elif not self.existe_sprite and self.tempo_spawn >= 900:
-
-            posicao_velocidade = (random.randint(0, (largura_tela-12)), random.randint(0, (altura_tela-12)))
-            pygame.draw.rect(tela, (255, 255, 0), (posicao_velocidade[0], posicao_velocidade[1], 12, 12))
+        elif not self.existe_sprite and self.tempo_spawn >= 600:
+            # Supondo que o jogo rode a 30fps, o contador irá até 600, ou seja, 20 segundos
+            # Então o objeto é desenhado aleatoriamente na tela (por enquanto sem sprite)
+            # E a variável recebe True até que haja a colisão do jogador com o objeto e variável volte a ser False
+            # Matheus: Nao sei fazer spawnar uma segunda vez tem algum erro na minha logica
+            status = False
+            self.pos = Vector2(random.randint(0, self.largura_tela-12), random.randint(0, self.altura_tela-12))
+            self.block.x = self.pos.x
+            self.block.y = self.pos.y
             self.existe_sprite = True
 
     def duracao_velocidade(self):
@@ -30,4 +42,20 @@ class Velocidade:
         else:
             self.boost_ativo = False
             self.duracao_boost = pygame.time.get_ticks()
+
+    def coletado(self, status):
+        if status:
+            self.existe_sprite = False
+            self.pos.x = 2000
+            self.pos.y = 2000
+
+    # So desenha na tela se o sprite existir na tela
+    def draw_vida(self):
+        if self.existe_sprite:
+            pygame.draw.rect(self.tela, (255, 255, 0), self.block)
+
+    # funcao que deve se repetir em outros objetos
+    def update_vida(self, status):
+        self.spawn_vida(status)
+        self.coletado(status)
 
