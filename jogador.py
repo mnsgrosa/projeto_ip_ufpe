@@ -52,14 +52,8 @@ class Jogador:
             self.vida -= 1
 
     def colisao_item_vel(self, item):
-        lista_colisao = []
-        for vel in item:
-            if self.block.colliderect(vel):
-                lista_colisao.append(True)
-            else:
-                lista_colisao.append(False)
-        if True in lista_colisao:
-            self.vel += 1
+        if self.block.colliderect(item):
+            return True
 
     def colisao_item_vida(self, item):
         if self.block.colliderect(item):

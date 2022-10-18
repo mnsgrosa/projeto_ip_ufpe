@@ -28,9 +28,9 @@ class Vida:
             # Matheus: Nao sei fazer spawnar uma segunda vez tem algum erro na minha logica
             status = False
             self.pos = Vector2(random.randint(0, self.largura_tela-12), random.randint(0, self.altura_tela-12))
-            self.block.x = self.pos.x
-            self.block.y = self.pos.y
+            self.block = pygame.Rect(self.pos.x, self.pos.y, 12, 12)
             self.existe_sprite = True
+            
 
     # Se o jogador coletar coloca a caixa pra fora da tela pra nao ser coletada depois que respawnar
     # sera alocado na tela novamente 
@@ -39,6 +39,7 @@ class Vida:
             self.existe_sprite = False
             self.pos.x = 2000
             self.pos.y = 2000
+            self.block = pygame.Rect(self.pos.x, self.pos.y, 12, 12)
 
     # So desenha na tela se o sprite existir na tela
     def draw_vida(self):

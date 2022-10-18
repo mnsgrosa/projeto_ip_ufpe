@@ -52,7 +52,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
         
-        print(jogo.jogador.ponto, jogo.jogador.vel)
+        print(jogo.item_vida.pos)
 
         if jogo.jogador.morto:
                 running = False
