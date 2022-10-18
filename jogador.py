@@ -12,6 +12,9 @@ class Jogador:
         self.ponto = 0
         self.block = pygame.Rect(self.pos.x, self.pos.y, 20, 20)
         self.morto = False
+        self.coleta_vida = False
+        self.coleta_vel = False
+        self.coleta_ponto = False
 
     # metodo de movimentacao da classe jogador
     def movimentacao(self, tecla):
@@ -59,14 +62,10 @@ class Jogador:
             self.vel += 1
 
     def colisao_item_vida(self, item):
-        lista_colisao = []
-        for vidas in item:
-            if self.block.colliderect(vidas):
-                lista_colisao.append(True)
-            else:
-                lista_colisao.append(False)
-        if True in lista_colisao:
+        if self.block.colliderect(item):
             self.vida += 1
+            self.coleta_vida = True
+        
 
     def colisao_item_ponto(self, item):
         lista_colisao = []
