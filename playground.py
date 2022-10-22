@@ -58,7 +58,7 @@ if __name__ == '__main__':
                 running = False
 
         tecla = pygame.key.get_pressed()        
-        jogo.update([inimigo], [item_vel], jogo.item_vida.block, [item_ponto], tecla)
+        jogo.update([inimigo], item_vel, jogo.item_vida.block, [item_ponto], tecla)
         
         if jogo.jogador.ponto != antiga_pontuacao:
             item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade), np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
