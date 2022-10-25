@@ -1,9 +1,6 @@
 import pygame
 from pygame.math import Vector2
 import random
-largura_tela, altura_tela = pygame.display.get_surface().get_size()
-tela = pygame.display.get_surface()
-
 
 class Velocidade:
     def __init__(self):

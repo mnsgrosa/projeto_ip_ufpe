@@ -2,6 +2,7 @@ import pygame, sys
 from pygame.math import Vector2
 from jogador import Jogador
 from vida import Vida
+from velocidade import Velocidade
 import numpy as np
 
 # Classe que ira conter todos os objetos
@@ -9,6 +10,7 @@ class Main:
     def __init__(self):
         self.jogador = Jogador()
         self.item_vida = Vida()
+        self.item_vel = Velocidade()
         self.next_move = pygame.time.get_ticks() + 100
 
     def update(self, inimigos, items_vel, items_vida, items_ponto, tecla):
@@ -16,11 +18,12 @@ class Main:
             self.next_move = pygame.time.get_ticks() + 100
             self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
         self.item_vida.update_vida(self.jogador.coleta_vida)
-
+        self.item_vel.update_velocidade(self.jogador.coleta_vel)
 
     def draw_elementos(self):
         self.jogador.draw_jogador()
         self.item_vida.draw_vida()
+        self.item_vel.draw_velocidade()
 
 if __name__ == '__main__':
     unidade = 20
@@ -58,7 +61,7 @@ if __name__ == '__main__':
                 running = False
 
         tecla = pygame.key.get_pressed()        
-        jogo.update([inimigo], item_vel, jogo.item_vida.block, [item_ponto], tecla)
+        jogo.update([inimigo], jogo.item_vel.block, jogo.item_vida.block, [item_ponto], tecla)
         
         if jogo.jogador.ponto != antiga_pontuacao:
             item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade), np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
