@@ -62,8 +62,8 @@ class Velocidade:
         self.coletado(status)
 
     # funcao que de cooldawn do boost
-    def respawn(self):
+    def respawn(self, status):
         now = pygame.time.get_ticks()
         if now - self.last >= self.cooldown:
             self.last = now
-            self.spawn_velocidade()
+            self.spawn_velocidade(status)
