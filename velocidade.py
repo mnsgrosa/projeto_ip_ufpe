@@ -17,14 +17,14 @@ class Velocidade(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 2000
-        self.last = pygame.time.get_ticks()
-        self.cooldown = 0
-        duracao_boost = False
-        boost_ativo = False
+        self.vel = self.largura_tela // 40
+        self.duracao_boost = 0
+        self.boost_ativo = False
 
     def spawn_velocidade(self, status):
         if status:
             self.existe_sprite = False
+            self.boost_ativo = True
         if self.existe_sprite:
             self.tempo_spawn = 0
         elif not self.existe_sprite and self.tempo_spawn < 400:
@@ -36,18 +36,10 @@ class Velocidade(pygame.sprite.Sprite):
             self.rect.x = self.pos.x
             self.rect.y = self.pos.y
             self.existe_sprite = True
-
-    def duracao_velocidade(self):
-        if pygame.time.get_ticks() < self.duracao_boost:
-            self.boost_ativo = True
-
+        if self.boost_ativo and self.duracao_boost < 200:
+            self.duracao_boost += 1
+            self.vel = self.largura_tela // 20
         else:
+            self.duracao_boost = 0
             self.boost_ativo = False
-            self.duracao_boost = pygame.time.get_ticks()
-
-    # funcao que de cooldown do boost
-    def respawn(self, status):
-        now = pygame.time.get_ticks()
-        if now - self.last >= self.cooldown:
-            self.last = now
-            self.spawn_velocidade(status)
+            self.vel = self.largura_tela // 40
