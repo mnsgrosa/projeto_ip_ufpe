@@ -3,6 +3,7 @@ from pygame.math import Vector2
 from jogador import Jogador
 from vida import Vida
 from velocidade import Velocidade
+from pygame.transform import scale
 import numpy as np
 
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
 
     inimigo = pygame.Rect(10, 10, 20, 20)
-    item_ponto = pygame.Rect(100, 10, 20, 20)
+    item_ponto = pygame.Rect(50, 10, 20, 20)
 
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('playground')
@@ -66,6 +67,7 @@ if __name__ == '__main__':
 
         tecla = pygame.key.get_pressed()
         jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, [item_ponto], tecla)
+        jogo.jogador.vel = jogo.item_vel.vel
 
         if jogo.jogador.ponto != antiga_pontuacao:
             item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
@@ -75,7 +77,7 @@ if __name__ == '__main__':
         screen.fill((255, 255, 255))
         screen.blit(bg, (0, 0))
         jogo.draw_elementos()
-        pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.draw.rect(pygame.display.get_surface(), (0, 123, 122), inimigo)
+        pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.display.flip()
         clock.tick(30)
