@@ -35,8 +35,6 @@ if __name__ == '__main__':
     SCREEN_WIDTH = 40
     SCREEN_HEIGHT = 22.5
 
-    fonte = pygame.font.SysFont('arial', 40, True, True)
-
     clock = pygame.time.Clock()
     clock.tick(30)
 
@@ -44,7 +42,7 @@ if __name__ == '__main__':
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
 
     inimigo = pygame.Rect(10, 10, 20, 20)
-    item_ponto = pygame.Rect(100, 10, 20, 20)
+    item_ponto = pygame.Rect(50, 10, 20, 20)
 
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('playground')
@@ -57,8 +55,6 @@ if __name__ == '__main__':
 
     while running:
         antiga_pontuacao = jogo.jogador.ponto
-        mensagem = f'Pontos: {antiga_pontuacao}'
-        texto_formatado = fonte.render(mensagem, True, (0, 0, 255))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -79,9 +75,8 @@ if __name__ == '__main__':
         pygame.display.update()
         screen.fill((255, 255, 255))
         screen.blit(bg, (0, 0))
-        screen.blit(texto_formatado, (760, 0))
         jogo.draw_elementos()
-        pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.draw.rect(pygame.display.get_surface(), (0, 123, 122), inimigo)
+        pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.display.flip()
         clock.tick(30)
