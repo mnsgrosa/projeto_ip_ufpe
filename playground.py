@@ -41,8 +41,10 @@ if __name__ == '__main__':
     bg = pygame.image.load("sprites/background.png")
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
 
-    inimigo = pygame.Rect(10, 10, 20, 20)
-    item_ponto = pygame.Rect(50, 10, 20, 20)
+    inimigo_pos = Vector2(np.random.randint(0, (unidade * SCREEN_WIDTH) - 22), np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22))
+    item_ponto_pos = Vector2(np.random.randint(0, (unidade * SCREEN_WIDTH) - 22), np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22))
+    inimigo = pygame.Rect(inimigo_pos.x, inimigo_pos.y, 22, 22)
+    item_ponto = pygame.Rect(item_ponto_pos.x, item_ponto_pos.y, 22, 22)
 
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('playground')
@@ -55,6 +57,7 @@ if __name__ == '__main__':
 
     while running:
         antiga_pontuacao = jogo.jogador.ponto
+        antiga_vida = jogo.jogador.vida
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -71,12 +74,15 @@ if __name__ == '__main__':
         if jogo.jogador.ponto != antiga_pontuacao:
             item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
                                      np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
-
+        if jogo.jogador.vida < antiga_vida:
+            inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
+                                     np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
+        
         pygame.display.update()
         screen.fill((255, 255, 255))
         screen.blit(bg, (0, 0))
         jogo.draw_elementos()
-        pygame.draw.rect(pygame.display.get_surface(), (0, 123, 122), inimigo)
+        pygame.draw.rect(pygame.display.get_surface(), (255, 0, 0), inimigo)
         pygame.draw.rect(pygame.display.get_surface(), (0, 0, 255), item_ponto)
         pygame.display.flip()
         clock.tick(30)
