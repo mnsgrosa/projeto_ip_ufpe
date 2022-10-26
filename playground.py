@@ -62,8 +62,6 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
 
-        print((jogo.item_vel.rect.x, jogo.item_vel.rect.y))
-
         if jogo.jogador.morto:
             running = False
 
