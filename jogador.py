@@ -16,7 +16,7 @@ class Jogador(pygame.sprite.Sprite):
         self.coleta_vida = False
         self.coleta_vel = False
         self.coleta_ponto = False
-        self.image = pygame.image.load('sprites/zezinho_parado.png').convert()
+        self.image = pygame.image.load('sprites/zezinho_parado.png')
         self.rect = self.image.get_rect()
         self.rect.x = w // 2
         self.rect.y = h // 2
