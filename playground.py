@@ -73,10 +73,10 @@ if __name__ == '__main__':
 
         if jogo.jogador.ponto != antiga_pontuacao:
             item_ponto = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
-                                     np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
+                                     np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
         if jogo.jogador.vida < antiga_vida:
             inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
-                                     np.random.randint(0, (unidade * SCREEN_HEIGHT) - 20), 20, 20)
+                                     np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
         
         pygame.display.update()
         screen.fill((255, 255, 255))
