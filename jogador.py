@@ -71,15 +71,11 @@ class Jogador(pygame.sprite.Sprite):
             self.coleta_vida = False
 
     def colisao_item_ponto(self, item):
-        lista_colisao = []
-        for ponto in item:
-            if self.rect.colliderect(ponto):
-                lista_colisao.append(True)
-            else:
-                lista_colisao.append(False)
-        if True in lista_colisao:
+        if self.rect.colliderect(item):
             self.ponto += 10
-            return True
+            self.coleta_ponto = True
+        else:
+            self.coleta_ponto = False
 
     # metodo de atualizacao de estado de jogo
     def game_over(self):
