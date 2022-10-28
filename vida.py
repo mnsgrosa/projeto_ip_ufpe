@@ -23,11 +23,11 @@ class Vida(pygame.sprite.Sprite):
             self.existe_sprite = False
         if self.existe_sprite:
             self.tempo_spawn = 0
-        elif not self.existe_sprite and self.tempo_spawn < 600:
+        elif not self.existe_sprite and self.tempo_spawn < 390:
             self.tempo_spawn += 1
             self.rect.x = 2000
             self.rect.y = 2000
-        elif not self.existe_sprite and self.tempo_spawn >= 600:
+        elif not self.existe_sprite and self.tempo_spawn >= 390:
             self.pos = Vector2(random.randint(0, self.largura_tela-50), random.randint(0, self.altura_tela-50))
             self.rect.x = self.pos.x
             self.rect.y = self.pos.y
