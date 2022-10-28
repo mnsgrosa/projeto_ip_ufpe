@@ -64,7 +64,7 @@ if __name__ == '__main__':
         antiga_pontuacao = jogo.jogador.ponto
         antiga_vida = jogo.jogador.vida
 
-        texto_vidas = f'Vidas {jogo.jogador.vida}'
+        texto_vidas = f'Vidas: {jogo.jogador.vida}'
         texto_pontos = f'Pontos: {jogo.jogador.ponto}'
         contador_vidas = fonte.render(texto_vidas, False, (230, 0, 0))
         contador_pontos = fonte.render(texto_pontos, False, (0, 0, 230))
