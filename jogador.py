@@ -9,7 +9,7 @@ class Jogador(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         w, h = pygame.display.get_surface().get_size()
         self.pos = Vector2(w // 2, h // 2)
-        self.vida = 10
+        self.vida = 3
         self.vel = w // 40
         self.ponto = 0
         self.morto = False
@@ -64,7 +64,8 @@ class Jogador(pygame.sprite.Sprite):
 
     def colisao_item_vida(self, item):
         if self.rect.colliderect(item):
-            self.vida += 1
+            if self.vida < 3:
+                self.vida += 1
             self.coleta_vida = True
         else:
             self.coleta_vida = False
