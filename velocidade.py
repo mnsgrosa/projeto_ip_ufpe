@@ -23,23 +23,23 @@ class Velocidade(pygame.sprite.Sprite):
 
     def spawn_velocidade(self, status):
         if status:
+            self.rect.x = 0
+            self.rect.y = 2000
             self.existe_sprite = False
             self.boost_ativo = True
         if self.existe_sprite:
             self.tempo_spawn = 0
-        elif not self.existe_sprite and self.tempo_spawn < 400:
+        elif not self.existe_sprite and not self.boost_ativo and self.tempo_spawn < 210:
             self.tempo_spawn += 1
-            self.rect.x = 0
-            self.rect.y = 2000
-        elif not self.existe_sprite and self.tempo_spawn >= 400:
+        elif not self.existe_sprite and not self.boost_ativo and self.tempo_spawn >= 210:
             self.pos = Vector2(random.randint(0, self.largura_tela - 50), random.randint(0, self.altura_tela - 50))
             self.rect.x = self.pos.x
             self.rect.y = self.pos.y
             self.existe_sprite = True
-        if self.boost_ativo and self.duracao_boost < 200:
+        if self.boost_ativo and self.duracao_boost < 180:
             self.duracao_boost += 1
             self.vel = self.largura_tela // 20
-        else:
+        elif self.boost_ativo and self.duracao_boost >= 180:
             self.duracao_boost = 0
             self.boost_ativo = False
             self.vel = self.largura_tela // 40
