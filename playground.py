@@ -2,6 +2,7 @@ import pygame, sys
 from pygame.math import Vector2
 from jogador import Jogador
 from vida import Vida
+from vida import Barra_vida
 from velocidade import Velocidade
 from pontos import Pontos
 import numpy as np
@@ -15,9 +16,10 @@ class Main:
         self.item_vida = Vida()
         self.item_vel = Velocidade()
         self.item_ponto = Pontos()
+        self.barra_vida = Barra_vida()
         self.next_move = pygame.time.get_ticks() + 100
         self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto)
+        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto, self.barra_vida)
 
     def update(self, inimigos, items_vel, items_vida, items_ponto, tecla):
         if pygame.time.get_ticks() >= self.next_move:
@@ -26,8 +28,9 @@ class Main:
         self.item_vida.spawn_vida(self.jogador.coleta_vida)
         self.item_vel.spawn_velocidade(self.jogador.coleta_vel)
         self.item_ponto.spawn_ponto(self.jogador.coleta_ponto)
+        self.barra_vida.update_barra(self.jogador.vida)
         self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto)
+        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto, self.barra_vida)
 
     def draw_elementos(self):
         self.sprites.draw(self.tela)
@@ -63,9 +66,7 @@ if __name__ == '__main__':
     while running:
         antiga_vida = jogo.jogador.vida
 
-        texto_vidas = f'Vidas: {jogo.jogador.vida}'
-        texto_pontos = f'Pontos: {jogo.jogador.ponto}'
-        contador_vidas = fonte.render(texto_vidas, False, (230, 0, 0))
+        texto_pontos = f'{jogo.jogador.ponto}'
         contador_pontos = fonte.render(texto_pontos, False, (0, 0, 230))
 
         for event in pygame.event.get():
@@ -88,7 +89,7 @@ if __name__ == '__main__':
         screen.blit(bg, (0, 0))
         jogo.draw_elementos()
         pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
-        screen.blit(contador_vidas, (20, 10))
-        screen.blit(contador_pontos, (610, 10))
+        screen.blit(contador_pontos, (728, 10))
         pygame.display.flip()
         clock.tick(30)
+        
