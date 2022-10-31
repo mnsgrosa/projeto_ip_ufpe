@@ -52,6 +52,9 @@ if __name__ == '__main__':
 
     bg = pygame.image.load("sprites/background.png")
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
+    logo = pygame.image.load("sprites/cingaco_logo.png")
+    logo = pygame.transform.scale(logo, (500, 500))
+    logo_rect = logo.get_rect(center = ((unidade * SCREEN_WIDTH) / 2, 50))
 
     inimigo_pos = Vector2(np.random.randint(0, (unidade * SCREEN_WIDTH) - 22),
                           np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22))
@@ -89,7 +92,9 @@ if __name__ == '__main__':
                         tela_start = False
                         running = True
 
-            screen.fill((250, 250, 250))
+            screen.fill((255, 255, 255))
+            screen.blit(bg, (0, 0))
+            screen.blit(logo, logo_rect)
             digitar_texto(f'RECORDE: {record}', (0, 0, 0), 33, (162, 270))
             digitar_texto('APERTE ESPAÇO PARA JOGAR', (0, 0, 0), 33, (162, 330))
             pygame.display.flip()
