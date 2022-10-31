@@ -1,4 +1,6 @@
 import pygame
+import math
+from bala import Bala
 from pygame.math import Vector2
 
 
@@ -81,6 +83,15 @@ class Jogador(pygame.sprite.Sprite):
     def game_over(self):
         if self.vida <= 0:
             self.morto = True
+
+    def atira(self, lista_de_inimigos):
+        min_dist = float('inf')
+        for inimigo in lista_de_inimigos:
+            temp = math.sqrt((self.rect.x - inimigo.x) ** 2 + (self.rect.y - inimigo.y) ** 2)
+            if temp < min_dist:
+                min_dist = temp
+                alvo = inimigo                
+        return Bala(alvo, self.rect.x, self.rect.y)
 
     # metodo que invoca os outros metodos para atualizar o jogo
     def update_jogador(self, inimigos, items_vel, items_vida, items_ponto, tecla):

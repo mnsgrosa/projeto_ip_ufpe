@@ -1,6 +1,7 @@
 import pygame, sys
 from pygame.math import Vector2
 from jogador import Jogador
+from bala import Bala
 from vida import Vida
 from vida import Barra_vida
 from velocidade import Velocidade
@@ -57,6 +58,9 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('CINGAÇO')
 
+
+    grupo_balas = pygame.sprite.Group()
+
     running = True
 
     pygame.init()
@@ -84,9 +88,14 @@ if __name__ == '__main__':
             inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
                                   np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
 
+        if pygame.time.get_ticks() % 5 == 0:
+            grupo_balas.add(jogo.jogador.atira([inimigo]))
+            print('a')
+
         pygame.display.update()
         screen.fill((255, 255, 255))
         screen.blit(bg, (0, 0))
+        grupo_balas.update()
         jogo.draw_elementos()
         pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
         screen.blit(contador_pontos, (728, 10))
