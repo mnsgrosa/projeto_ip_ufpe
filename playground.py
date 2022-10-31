@@ -67,6 +67,8 @@ if __name__ == '__main__':
 
     jogo = Main()
 
+    contador = 0
+
     while running:
         antiga_vida = jogo.jogador.vida
 
@@ -88,14 +90,18 @@ if __name__ == '__main__':
             inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
                                   np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
 
-        if pygame.time.get_ticks() % 5 == 0:
+        if contador == 30:
             grupo_balas.add(jogo.jogador.atira([inimigo]))
+            contador = 0
             print('a')
 
+
+        contador += 1
         pygame.display.update()
         screen.fill((255, 255, 255))
         screen.blit(bg, (0, 0))
         grupo_balas.update()
+        grupo_balas.draw(jogo.tela)
         jogo.draw_elementos()
         pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
         screen.blit(contador_pontos, (728, 10))
