@@ -36,6 +36,11 @@ class Main:
     def draw_elementos(self):
         self.sprites.draw(self.tela)
 
+def digitar_texto(texto, cor, tamanho, posicao):
+    fonte = pygame.font.SysFont('arial', tamanho, True, False)
+    texto_formatado = fonte.render(texto, False, cor)
+    screen.blit(texto_formatado, posicao)
+
 
 if __name__ == '__main__':
     unidade = 20
@@ -48,9 +53,6 @@ if __name__ == '__main__':
     bg = pygame.image.load("sprites/background.png")
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
 
-    pygame.font.init()
-    fonte = pygame.font.SysFont('arial', 28, True, False)
-
     inimigo_pos = Vector2(np.random.randint(0, (unidade * SCREEN_WIDTH) - 22),
                           np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22))
     inimigo = pygame.Rect(inimigo_pos.x, inimigo_pos.y, 22, 22)
@@ -61,50 +63,75 @@ if __name__ == '__main__':
 
     grupo_balas = pygame.sprite.Group()
 
-    running = True
+    game = True
+    tela_start = True
+    running = False
 
     pygame.init()
+    pygame.font.init()
 
-    jogo = Main()
-
+    record = 0
     contador = 0
 
-    while running:
-        antiga_vida = jogo.jogador.vida
+    while game:
+        while tela_start:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    tela_start = False
+                    running = False
+                    game = False
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_SPACE:
+                        tela_start = False
+                        running = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        tela_start = False
+                        running = True
 
-        texto_pontos = f'{jogo.jogador.ponto}'
-        contador_pontos = fonte.render(texto_pontos, False, (0, 0, 230))
+            screen.fill((250, 250, 250))
+            digitar_texto(f'RECORDE: {record}', (0, 0, 0), 33, (162, 270))
+            digitar_texto('APERTE ESPAÇO PARA JOGAR', (0, 0, 0), 33, (162, 330))
+            pygame.display.flip()
+            clock.tick(30)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        jogo = Main()
+
+        while running:
+            antiga_vida = jogo.jogador.vida
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    tela_start = False
+                    running = False
+                    game = False
+
+            if jogo.jogador.morto:
+                if jogo.jogador.ponto > record:
+                    record = jogo.jogador.ponto
+                tela_start = True
                 running = False
 
-        if jogo.jogador.morto:
-            running = False
+            tecla = pygame.key.get_pressed()
+            jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.rect, tecla)
+            jogo.jogador.vel = jogo.item_vel.vel
 
-        tecla = pygame.key.get_pressed()
-        jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.rect, tecla)
-        jogo.jogador.vel = jogo.item_vel.vel
+            if jogo.jogador.vida < antiga_vida:
+                inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
+                                      np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
 
-        if jogo.jogador.vida < antiga_vida:
-            inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
-                                  np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
+            if contador == 30:
+                grupo_balas.add(jogo.jogador.atira([inimigo]))
+                contador = 0
 
-        if contador == 30:
-            grupo_balas.add(jogo.jogador.atira([inimigo]))
-            contador = 0
-            print('a')
-
-
-        contador += 1
-        pygame.display.update()
-        screen.fill((255, 255, 255))
-        screen.blit(bg, (0, 0))
-        grupo_balas.update()
-        grupo_balas.draw(jogo.tela)
-        jogo.draw_elementos()
-        pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
-        screen.blit(contador_pontos, (728, 10))
-        pygame.display.flip()
-        clock.tick(30)
-        
+            contador += 1
+            pygame.display.update()
+            screen.fill((255, 255, 255))
+            screen.blit(bg, (0, 0))
+            grupo_balas.update()
+            grupo_balas.draw(jogo.tela)
+            jogo.draw_elementos()
+            pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
+            digitar_texto(f'{jogo.jogador.ponto}', (0, 0, 230), 28, (728, 10))
+            pygame.display.flip()
+            clock.tick(30)
