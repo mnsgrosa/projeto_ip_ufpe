@@ -28,7 +28,7 @@ class Main:
             self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
         self.item_vida.spawn_vida(self.jogador.coleta_vida)
         self.item_vel.spawn_velocidade(self.jogador.coleta_vel)
-        self.item_ponto.spawn_ponto(self.jogador.coleta_ponto)
+        self.item_ponto.update_ponto(self.jogador.coleta_ponto)
         self.barra_vida.update_barra(self.jogador.vida)
         self.sprites = pygame.sprite.Group()
         self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto, self.barra_vida)
