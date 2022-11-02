@@ -11,7 +11,6 @@ class Jogador(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         w, h = pygame.display.get_surface().get_size()
-        self.pos = Vector2(w // 2, h // 2)
         self.vida = 3
         self.vel = w // 40
         self.ponto = 0
@@ -19,46 +18,94 @@ class Jogador(pygame.sprite.Sprite):
         self.coleta_vida = False
         self.coleta_vel = False
         self.coleta_ponto = False
-        self.contador = -0.25
+        self.contador = -0.5
         self.parado = True
         self.direcao = 'direita'
-        self.direita_spritesheet = pygame.image.load('sprites/soldado_direita_spritesheet.png')
-        self.sprites_direita = [scale(self.direita_spritesheet.subsurface((0, 0), (50, 30)), (75, 45)),
-                                scale(self.direita_spritesheet.subsurface((0, 30), (50, 30)), (75, 45)),
-                                scale(self.direita_spritesheet.subsurface((0, 60), (50, 30)), (75, 45))]
-        self.esquerda_spritesheet = pygame.image.load('sprites/soldado_esquerda_spritesheet.png')
-        self.sprites_esquerda = [scale(self.esquerda_spritesheet.subsurface((0, 0), (50, 30)), (75, 45)),
-                                scale(self.esquerda_spritesheet.subsurface((0, 30), (50, 30)), (75, 45)),
-                                scale(self.esquerda_spritesheet.subsurface((0, 60), (50, 30)), (75, 45))]
-        self.cima_spritesheet = pygame.image.load('sprites/soldado_cima_spritesheet.png')
-        self.sprites_cima = [scale(self.cima_spritesheet.subsurface((0, 0), (30, 46)), (45, 69)),
-                            scale(self.cima_spritesheet.subsurface((30, 0), (30, 46)), (45, 69)),
-                            scale(self.cima_spritesheet.subsurface((60, 0), (30, 46)), (45, 69))]
-        self.baixo_spritesheet = pygame.image.load('sprites/soldado_baixo_spritesheet.png')
-        self.sprites_baixo = [scale(self.baixo_spritesheet.subsurface((0, 0), (30, 46)), (45, 69)),
-                            scale(self.baixo_spritesheet.subsurface((30, 0), (30, 46)), (45, 69)),
-                            scale(self.baixo_spritesheet.subsurface((60, 0), (30, 46)), (45, 69))]
-        self.image = self.sprites_direita[2]
+        self.direita_spritesheet = scale(pygame.image.load('sprites/soldado_direita_spritesheet.png'), (75, 135))
+        self.sprites_direita = [self.direita_spritesheet.subsurface((0, 0), (75, 45)),
+                                self.direita_spritesheet.subsurface((0, 90), (75, 45)),
+                                self.direita_spritesheet.subsurface((0, 45), (75, 45)),
+                                self.direita_spritesheet.subsurface((0, 90), (75, 45))]
+        self.esquerda_spritesheet = scale(pygame.image.load('sprites/soldado_esquerda_spritesheet.png'), (75, 135))
+        self.sprites_esquerda = [self.esquerda_spritesheet.subsurface((0, 0), (75, 45)),
+                                 self.esquerda_spritesheet.subsurface((0, 90), (75, 45)),
+                                 self.esquerda_spritesheet.subsurface((0, 45), (75, 45)),
+                                 self.esquerda_spritesheet.subsurface((0, 90), (75, 45))]
+        self.cima_spritesheet = scale(pygame.image.load('sprites/soldado_cima_spritesheet.png'), (135, 75))
+        self.sprites_cima = [self.cima_spritesheet.subsurface((0, 0), (45, 75)),
+                             self.cima_spritesheet.subsurface((90, 0), (45, 75)),
+                             self.cima_spritesheet.subsurface((45, 0), (45, 75)),
+                             self.cima_spritesheet.subsurface((90, 0), (45, 75))]
+        self.baixo_spritesheet = scale(pygame.image.load('sprites/soldado_baixo_spritesheet.png'), (135, 75))
+        self.sprites_baixo = [self.baixo_spritesheet.subsurface((0, 0), (45, 75)),
+                              self.baixo_spritesheet.subsurface((90, 0), (45, 75)),
+                              self.baixo_spritesheet.subsurface((45, 0), (45, 75)),
+                              self.baixo_spritesheet.subsurface((90, 0), (45, 75))]
+        self.direita_cima_spritesheet = scale(pygame.image.load('sprites/soldado_direita_cima_spritesheet.png'), (90, 180))
+        self.sprites_direita_cima = [self.direita_cima_spritesheet.subsurface((0, 0), (90, 60)),
+                                     self.direita_cima_spritesheet.subsurface((0, 120), (90, 60)),
+                                     self.direita_cima_spritesheet.subsurface((0, 60), (90, 60)),
+                                     self.direita_cima_spritesheet.subsurface((0, 120), (90, 60))]
+        self.esquerda_cima_spritesheet = scale(pygame.image.load('sprites/soldado_esquerda_cima_spritesheet.png'), (90, 180))
+        self.sprites_esquerda_cima = [self.esquerda_cima_spritesheet.subsurface((0, 0), (90, 60)),
+                                     self.esquerda_cima_spritesheet.subsurface((0, 120), (90, 60)),
+                                     self.esquerda_cima_spritesheet.subsurface((0, 60), (90, 60)),
+                                     self.esquerda_cima_spritesheet.subsurface((0, 120), (90, 60))]
+        self.esquerda_baixo_spritesheet = scale(pygame.image.load('sprites/soldado_esquerda_baixo_spritesheet.png'), (90, 180))
+        self.sprites_esquerda_baixo = [self.esquerda_baixo_spritesheet.subsurface((0, 0), (90, 60)),
+                                      self.esquerda_baixo_spritesheet.subsurface((0, 120), (90, 60)),
+                                      self.esquerda_baixo_spritesheet.subsurface((0, 60), (90, 60)),
+                                      self.esquerda_baixo_spritesheet.subsurface((0, 120), (90, 60))]
+        self.direita_baixo_spritesheet = scale(pygame.image.load('sprites/soldado_direita_baixo_spritesheet.png'), (90, 180))
+        self.sprites_direita_baixo = [self.direita_baixo_spritesheet.subsurface((0, 0), (90, 60)),
+                                     self.direita_baixo_spritesheet.subsurface((0, 120), (90, 60)),
+                                     self.direita_baixo_spritesheet.subsurface((0, 60), (90, 60)),
+                                     self.direita_baixo_spritesheet.subsurface((0, 120), (90, 60))]
+        self.image = self.sprites_direita[1]
         self.rect = self.image.get_rect(center=(w//2, h//2))
 
     # metodo de movimentacao da classe jogador
     def movimentacao(self, tecla):
-        if tecla[pygame.K_UP] and self.pos.y > 0:
+        if tecla[pygame.K_RIGHT] and tecla[pygame.K_UP] and self.rect.x < 710 and self.rect.y > 0:
+            self.parado = False
+            self.direcao = 'direita cima'
+            self.rect.x += self.vel
+            self.rect.y -= self.vel
+
+        elif tecla[pygame.K_LEFT] and tecla[pygame.K_UP] and self.rect.x > 0 and self.rect.y > 0:
+            self.parado = False
+            self.direcao = 'esquerda cima'
+            self.rect.x -= self.vel
+            self.rect.y -= self.vel
+
+        elif tecla[pygame.K_LEFT] and tecla[pygame.K_DOWN] and self.rect.x > 0 and self.rect.y < 390:
+            self.parado = False
+            self.direcao = 'esquerda baixo'
+            self.rect.x -= self.vel
+            self.rect.y += self.vel
+
+        elif tecla[pygame.K_RIGHT] and tecla[pygame.K_DOWN] and self.rect.x < 710 and self.rect.y < 390:
+            self.parado = False
+            self.direcao = 'direita baixo'
+            self.rect.x += self.vel
+            self.rect.y += self.vel
+
+        elif tecla[pygame.K_UP] and self.rect.y > 0:
             self.parado = False
             self.direcao = 'cima'
             self.rect.y -= self.vel
 
-        elif tecla[pygame.K_RIGHT] and self.pos.x < 800:
+        elif tecla[pygame.K_RIGHT] and self.rect.x < 750:
             self.parado = False
             self.direcao = 'direita'
             self.rect.x += self.vel
 
-        elif tecla[pygame.K_DOWN] and self.pos.y < 450:
+        elif tecla[pygame.K_DOWN] and self.rect.y < 400:
             self.parado = False
             self.direcao = 'baixo'
             self.rect.y += self.vel
 
-        elif tecla[pygame.K_LEFT] and self.pos.x > 0:
+        elif tecla[pygame.K_LEFT] and self.rect.x > 0:
             self.parado = False
             self.direcao = 'esquerda'
             self.rect.x -= self.vel
@@ -70,16 +117,24 @@ class Jogador(pygame.sprite.Sprite):
     def animacao(self):
         if self.parado:
             if self.direcao == 'direita':
-                self.image = self.sprites_direita[2]
+                self.image = self.sprites_direita[1]
             elif self.direcao == 'esquerda':
-                self.image = self.sprites_esquerda[2]
+                self.image = self.sprites_esquerda[1]
             elif self.direcao == 'cima':
-                self.image = self.sprites_cima[2]
+                self.image = self.sprites_cima[1]
             elif self.direcao == 'baixo':
-                self.image = self.sprites_baixo[2]
+                self.image = self.sprites_baixo[1]
+            elif self.direcao == 'direita cima':
+                self.image = self.sprites_direita_cima[1]
+            elif self.direcao == 'esquerda cima':
+                self.image = self.sprites_esquerda_cima[1]
+            elif self.direcao == 'esquerda baixo':
+                self.image = self.sprites_esquerda_baixo[1]
+            elif self.direcao == 'direita baixo':
+                self.image = self.sprites_direita_baixo[1]
         else:
-            self.contador += 0.25
-            if self.contador > 2:
+            self.contador += 0.5
+            if self.contador == 4:
                 self.contador = 0
             if self.direcao == 'direita':
                 self.image = self.sprites_direita[int(self.contador)]
@@ -89,6 +144,14 @@ class Jogador(pygame.sprite.Sprite):
                 self.image = self.sprites_cima[int(self.contador)]
             elif self.direcao == 'baixo':
                 self.image = self.sprites_baixo[int(self.contador)]
+            elif self.direcao == 'direita cima':
+                self.image = self.sprites_direita_cima[int(self.contador)]
+            elif self.direcao == 'esquerda cima':
+                self.image = self.sprites_esquerda_cima[int(self.contador)]
+            elif self.direcao == 'esquerda baixo':
+                self.image = self.sprites_esquerda_baixo[int(self.contador)]
+            elif self.direcao == 'direita baixo':
+                self.image = self.sprites_direita_baixo[int(self.contador)]
 
 
     # metodo de colisao dos outros items, o parametro recebe uma lista de items
