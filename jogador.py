@@ -2,6 +2,7 @@ import pygame
 import math
 from bala import Bala
 from pygame.math import Vector2
+from pygame.transform import scale
 
 
 # Note que jogador herda da classe Sprite do pygame
@@ -18,32 +19,77 @@ class Jogador(pygame.sprite.Sprite):
         self.coleta_vida = False
         self.coleta_vel = False
         self.coleta_ponto = False
-        self.image = pygame.image.load('sprites/zezinho_parado.png')
-        self.rect = self.image.get_rect()
-        self.rect.x = w // 2
-        self.rect.y = h // 2
+        self.contador = -0.25
+        self.parado = True
+        self.direcao = 'direita'
+        self.direita_spritesheet = pygame.image.load('sprites/soldado_direita_spritesheet.png')
+        self.sprites_direita = [scale(self.direita_spritesheet.subsurface((0, 0), (50, 30)), (75, 45)),
+                                scale(self.direita_spritesheet.subsurface((0, 30), (50, 30)), (75, 45)),
+                                scale(self.direita_spritesheet.subsurface((0, 60), (50, 30)), (75, 45))]
+        self.esquerda_spritesheet = pygame.image.load('sprites/soldado_esquerda_spritesheet.png')
+        self.sprites_esquerda = [scale(self.esquerda_spritesheet.subsurface((0, 0), (50, 30)), (75, 45)),
+                                scale(self.esquerda_spritesheet.subsurface((0, 30), (50, 30)), (75, 45)),
+                                scale(self.esquerda_spritesheet.subsurface((0, 60), (50, 30)), (75, 45))]
+        self.cima_spritesheet = pygame.image.load('sprites/soldado_cima_spritesheet.png')
+        self.sprites_cima = [scale(self.cima_spritesheet.subsurface((0, 0), (30, 46)), (45, 69)),
+                            scale(self.cima_spritesheet.subsurface((30, 0), (30, 46)), (45, 69)),
+                            scale(self.cima_spritesheet.subsurface((60, 0), (30, 46)), (45, 69))]
+        self.baixo_spritesheet = pygame.image.load('sprites/soldado_baixo_spritesheet.png')
+        self.sprites_baixo = [scale(self.baixo_spritesheet.subsurface((0, 0), (30, 46)), (45, 69)),
+                            scale(self.baixo_spritesheet.subsurface((30, 0), (30, 46)), (45, 69)),
+                            scale(self.baixo_spritesheet.subsurface((60, 0), (30, 46)), (45, 69))]
+        self.image = self.sprites_direita[2]
+        self.rect = self.image.get_rect(center=(w//2, h//2))
 
     # metodo de movimentacao da classe jogador
     def movimentacao(self, tecla):
         if tecla[pygame.K_UP] and self.pos.y > 0:
+            self.parado = False
+            self.direcao = 'cima'
             self.rect.y -= self.vel
 
-        if tecla[pygame.K_RIGHT] and self.pos.x < 800:
+        elif tecla[pygame.K_RIGHT] and self.pos.x < 800:
+            self.parado = False
+            self.direcao = 'direita'
             self.rect.x += self.vel
 
-        if tecla[pygame.K_DOWN] and self.pos.y < 450:
+        elif tecla[pygame.K_DOWN] and self.pos.y < 450:
+            self.parado = False
+            self.direcao = 'baixo'
             self.rect.y += self.vel
 
-        if tecla[pygame.K_LEFT] and self.pos.x > 0:
+        elif tecla[pygame.K_LEFT] and self.pos.x > 0:
+            self.parado = False
+            self.direcao = 'esquerda'
             self.rect.x -= self.vel
 
-    # metodo de animacao
-    def draw_jogador(self):
-        x_pos = self.pos.x
-        y_pos = self.pos.y
+        else:
+            self.parado = True
 
-        self.rect = pygame.Rect(x_pos, y_pos, 20, 20)
-        pygame.draw.rect(pygame.display.get_surface(), (183, 111, 122), self.rect)
+    # metodo de animacao
+    def animacao(self):
+        if self.parado:
+            if self.direcao == 'direita':
+                self.image = self.sprites_direita[2]
+            elif self.direcao == 'esquerda':
+                self.image = self.sprites_esquerda[2]
+            elif self.direcao == 'cima':
+                self.image = self.sprites_cima[2]
+            elif self.direcao == 'baixo':
+                self.image = self.sprites_baixo[2]
+        else:
+            self.contador += 0.25
+            if self.contador > 2:
+                self.contador = 0
+            if self.direcao == 'direita':
+                self.image = self.sprites_direita[int(self.contador)]
+            elif self.direcao == 'esquerda':
+                self.image = self.sprites_esquerda[int(self.contador)]
+            elif self.direcao == 'cima':
+                self.image = self.sprites_cima[int(self.contador)]
+            elif self.direcao == 'baixo':
+                self.image = self.sprites_baixo[int(self.contador)]
+
 
     # metodo de colisao dos outros items, o parametro recebe uma lista de items
     # e verifica se colidiu com os itens ou inimigos. prevejo que depois teirei de
@@ -90,7 +136,7 @@ class Jogador(pygame.sprite.Sprite):
             temp = math.sqrt((self.rect.x - inimigo.x) ** 2 + (self.rect.y - inimigo.y) ** 2)
             if temp < min_dist:
                 min_dist = temp
-                alvo = inimigo                
+                alvo = inimigo
         return Bala(alvo, self.rect.x, self.rect.y)
 
     # metodo que invoca os outros metodos para atualizar o jogo
@@ -101,4 +147,5 @@ class Jogador(pygame.sprite.Sprite):
         self.colisao_item_ponto(items_ponto)
         self.game_over()
         self.movimentacao(tecla)
+        self.animacao()
         return self.colisao_item_vel(items_vel)
