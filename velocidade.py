@@ -14,7 +14,7 @@ class Velocidade(pygame.sprite.Sprite):
         self.duracao_boost = 0
         self.existe_sprite = False
         self.boost_ativo = False
-        self.som = pygame.mixer.Sound('sons/som_velocidade.wav')
+        self.som = pygame.mixer.Sound('som_velocidade.wav')
         self.som.set_volume(0.09)
         self.image = scale(pygame.image.load('sprites/sprite_cafe.png'), (50, 50))
         self.rect = self.image.get_rect(topleft=(0, 2000))
