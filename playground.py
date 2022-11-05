@@ -1,12 +1,12 @@
-import pygame, sys
+import pygame
 from pygame.math import Vector2
+from random import randint
 from jogador import Jogador
 from bala import Bala
 from vida import Vida
 from vida import Barra_vida
 from velocidade import Velocidade
 from pontos import Pontos
-import numpy as np
 
 
 # Classe que ira conter todos os objetos
@@ -27,7 +27,7 @@ class Main:
             self.next_move = pygame.time.get_ticks() + 100
             self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
         self.item_vida.spawn_vida(self.jogador.coleta_vida)
-        self.item_vel.spawn_velocidade(self.jogador.coleta_vel)
+        self.item_vel.update_cafe(self.jogador.coleta_vel)
         self.item_ponto.update_ponto(self.jogador.coleta_ponto)
         self.barra_vida.update_barra(self.jogador.vida)
         self.sprites = pygame.sprite.Group()
@@ -56,13 +56,11 @@ if __name__ == '__main__':
     logo = pygame.transform.scale(logo, (500, 500))
     logo_rect = logo.get_rect(center = ((unidade * SCREEN_WIDTH) / 2, 50))
 
-    inimigo_pos = Vector2(np.random.randint(0, (unidade * SCREEN_WIDTH) - 22),
-                          np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22))
+    inimigo_pos = Vector2(randint(0, (unidade * SCREEN_WIDTH) - 22), randint(0, (unidade * SCREEN_HEIGHT) - 22))
     inimigo = pygame.Rect(inimigo_pos.x, inimigo_pos.y, 22, 22)
 
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('CINGAÇO')
-
 
     grupo_balas = pygame.sprite.Group()
 
@@ -72,11 +70,22 @@ if __name__ == '__main__':
 
     pygame.init()
     pygame.font.init()
+    pygame.mixer.init()
+
+    som_start = pygame.mixer.Sound('som_start.wav')
+    som_ganha_vida = pygame.mixer.Sound('som_ganha_vida.wav')
+    som_perde_vida = pygame.mixer.Sound('som_perde_vida.wav')
+    som_game_over = pygame.mixer.Sound('som_game_over.wav')
 
     record = 0
     contador = 0
 
     while game:
+
+        musica_fundo = pygame.mixer.music.load('sons/musica_fundo_tela.mp3')
+        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.play(-1)
+
         while tela_start:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -102,6 +111,11 @@ if __name__ == '__main__':
 
         jogo = Main()
 
+        som_start.play()
+        musica_fundo = pygame.mixer.music.load('sons/musica_fundo_game.mp3')
+        pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play()
+
         while running:
             antiga_vida = jogo.jogador.vida
 
@@ -112,8 +126,6 @@ if __name__ == '__main__':
                     game = False
 
             if jogo.jogador.morto:
-                if jogo.jogador.ponto > record:
-                    record = jogo.jogador.ponto
                 tela_start = True
                 running = False
 
@@ -122,8 +134,11 @@ if __name__ == '__main__':
             jogo.jogador.vel = jogo.item_vel.vel
 
             if jogo.jogador.vida < antiga_vida:
-                inimigo = pygame.Rect(np.random.randint(0, (unidade * SCREEN_WIDTH) - unidade),
-                                      np.random.randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
+                som_perde_vida.play()
+                inimigo = pygame.Rect(randint(0, (unidade * SCREEN_WIDTH) - unidade),
+                                      randint(0, (unidade * SCREEN_HEIGHT) - 22), 22, 22)
+            elif jogo.jogador.vida > antiga_vida:
+                som_ganha_vida.play()
 
             if contador == 30:
                 grupo_balas.add(jogo.jogador.atira([inimigo]))
@@ -140,3 +155,7 @@ if __name__ == '__main__':
             digitar_texto(f'{jogo.jogador.ponto}', (0, 0, 230), 28, (728, 10))
             pygame.display.flip()
             clock.tick(30)
+
+        som_game_over.play()
+        if jogo.jogador.ponto > record:
+            record = jogo.jogador.ponto
