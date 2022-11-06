@@ -52,4 +52,10 @@ class Inimigo:
     def draw(self, jogador):
         direcao = self.update(jogador)
         if direcao == 'direita':
-            
+            pass
+        elif direcao == 'cima':
+            pass
+        elif direcao == 'esquerda':
+            pass
+        elif direcao == 'baixo'
+            pass
