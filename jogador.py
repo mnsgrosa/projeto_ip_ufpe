@@ -17,7 +17,7 @@ class Jogador(pygame.sprite.Sprite):
         self.morto = False
         self.coleta_vida = False
         self.coleta_vel = False
-        self.coleta_ponto = False
+        self.ponto_coletado = (1000, 1000)
         self.contador = -0.5
         self.parado = True
         self.direcao = 'direita'
@@ -181,12 +181,12 @@ class Jogador(pygame.sprite.Sprite):
         else:
             self.coleta_vida = False
 
-    def colisao_item_ponto(self, item):
-        if self.rect.colliderect(item):
-            self.ponto += 10
-            self.coleta_ponto = True
-        else:
-            self.coleta_ponto = False
+    def colisao_item_ponto(self, lista_ponto):
+        for ponto in lista_ponto:
+            ponto_rect = pygame.Rect(ponto[0], ponto[1], 35, 35)
+            if self.rect.colliderect(ponto_rect):
+                self.ponto += 10
+                self.ponto_coletado = ponto
 
     # metodo de atualizacao de estado de jogo
     def game_over(self):
