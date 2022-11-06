@@ -96,9 +96,6 @@ if __name__ == '__main__':
     contador = 0
 
     while game:
-        pygame.display.update()
-        screen.fill((255, 255, 255))
-        screen.blit(bg, (0, 0))
 
         musica_fundo = pygame.mixer.music.load('sons/musica_fundo_tela.mp3')
         pygame.mixer.music.set_volume(1)
@@ -135,6 +132,10 @@ if __name__ == '__main__':
         pygame.mixer.music.play()
 
         while running:
+            pygame.display.update()
+            screen.fill((255, 255, 255))
+            screen.blit(bg, (0, 0))
+            
             antiga_vida = jogo.jogador.vida
 
             for event in pygame.event.get():
