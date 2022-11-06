@@ -7,6 +7,7 @@ from vida import Vida
 from vida import Barra_vida
 from velocidade import Velocidade
 from pontos import Pontos
+from inimigo import Inimigo
 
 
 # Classe que ira conter todos os objetos
@@ -18,11 +19,16 @@ class Main:
         self.item_vel = Velocidade()
         self.item_ponto = Pontos()
         self.barra_vida = Barra_vida()
+        self.inimigos = []
         self.next_move = pygame.time.get_ticks() + 100
         self.sprites = pygame.sprite.Group()
         self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.barra_vida)
 
-    def update(self, inimigos, items_vel, items_vida, items_ponto, tecla, morte_inimigo, pos_inimigo_morto):
+    def add_inimigo(self):
+        if self.inimigos.len() < 10:
+            self.inimigos.append(Inimigo())
+
+    def update(self, inimigos, items_vel, items_vida, items_ponto, tecla, morte_inimigo, pos_inimigo_morto, bala):
         self.item_ponto.update_ponto(morte_inimigo, pos_inimigo_morto, self.jogador.ponto_coletado)
         if pygame.time.get_ticks() >= self.next_move:
             self.next_move = pygame.time.get_ticks() + 100
@@ -32,9 +38,16 @@ class Main:
         self.barra_vida.update_barra(self.jogador.vida)
         self.sprites = pygame.sprite.Group()
         self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.barra_vida)
+        if self.inimigos > 0:
+            for indice, inimigo in enumerate(self.inimigos):
+                inimigo.update(self.jogador, bala)
+                if inimigo.morto:
+                    self.inimigos.pop(indice)
 
-    def draw_elementos(self):
+    def draw_elementos(self, bala):
         self.sprites.draw(self.tela)
+        for inimigo in inimigos:
+            inimigo.draw(self.jogador, bala)
 
 def digitar_texto(texto, cor, tamanho, posicao):
     fonte = pygame.font.SysFont('arial', tamanho, True, False)
@@ -83,6 +96,9 @@ if __name__ == '__main__':
     contador = 0
 
     while game:
+        pygame.display.update()
+        screen.fill((255, 255, 255))
+        screen.blit(bg, (0, 0))
 
         musica_fundo = pygame.mixer.music.load('sons/musica_fundo_tela.mp3')
         pygame.mixer.music.set_volume(1)
@@ -131,10 +147,6 @@ if __name__ == '__main__':
                 tela_start = True
                 running = False
 
-            tecla = pygame.key.get_pressed()
-            jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.lista_ponto, tecla, morte_inimigo, pos_inimigo_morto)
-            jogo.jogador.vel = jogo.item_vel.vel
-
             if jogo.jogador.vida < antiga_vida:
                 som_perde_vida.play()
                 morte_inimigo = True
@@ -149,13 +161,15 @@ if __name__ == '__main__':
                 morte_inimigo = False
 
             if contador == 30:
-                grupo_balas.add(jogo.jogador.atira([inimigo]))
+                bala = jogo.jogador.atira(jogo.inimigos)
+                grupo_balas.add(bala)
                 contador = 0
 
+            tecla = pygame.key.get_pressed()
+            jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.lista_ponto, tecla, morte_inimigo, pos_inimigo_morto, bala)
+            jogo.jogador.vel = jogo.item_vel.vel
+
             contador += 1
-            pygame.display.update()
-            screen.fill((255, 255, 255))
-            screen.blit(bg, (0, 0))
             grupo_balas.update()
             grupo_balas.draw(jogo.tela)
             jogo.draw_elementos()
