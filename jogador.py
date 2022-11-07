@@ -1,5 +1,7 @@
 import pygame
+import math
 from pygame.math import Vector2
+from pygame.transform import scale
 
 
 # Note que jogador herda da classe Sprite do pygame
@@ -8,53 +10,94 @@ class Jogador(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         w, h = pygame.display.get_surface().get_size()
-        self.pos = Vector2(w // 2, h // 2)
         self.vida = 3
         self.vel = w // 40
         self.ponto = 0
         self.morto = False
+        self.dano = False
         self.coleta_vida = False
         self.coleta_vel = False
         self.coleta_ponto = False
-        self.image = pygame.image.load('sprites/zezinho_parado.png')
-        self.rect = self.image.get_rect()
-        self.rect.x = w // 2
-        self.rect.y = h // 2
+        self.contador = -0.5
+        self.parado = True
+        self.direcao = 'direita'
+        self.spritesheet = scale(pygame.image.load('sprites/spritesheet_cangaceiro.png'), (240, 240))
+        self.sprites_esquerda = [self.spritesheet.subsurface((0, 0), (40, 60)),
+                                 self.spritesheet.subsurface((40, 0), (40, 60)),
+                                 self.spritesheet.subsurface((80, 0), (40, 60)),
+                                 self.spritesheet.subsurface((120, 0), (40, 60)),
+                                 self.spritesheet.subsurface((160, 0), (40, 60)),
+                                 self.spritesheet.subsurface((200, 0), (40, 60)),]
+        self.sprites_direita = [self.spritesheet.subsurface((0, 60), (40, 60)),
+                                 self.spritesheet.subsurface((40, 60), (40, 60)),
+                                 self.spritesheet.subsurface((80, 60), (40, 60)),
+                                 self.spritesheet.subsurface((120, 60), (40, 60)),
+                                 self.spritesheet.subsurface((160, 60), (40, 60)),
+                                 self.spritesheet.subsurface((200, 60), (40, 60)),]
+        self.sprites_baixo = [self.spritesheet.subsurface((0, 120), (40, 60)),
+                                 self.spritesheet.subsurface((40, 120), (40, 60)),
+                                 self.spritesheet.subsurface((80, 120), (40, 60)),
+                                 self.spritesheet.subsurface((120, 120), (40, 60)),
+                                 self.spritesheet.subsurface((160, 120), (40, 60)),
+                                 self.spritesheet.subsurface((200, 120), (40, 60)),]
+        self.sprites_cima = [self.spritesheet.subsurface((0, 180), (40, 60)),
+                                 self.spritesheet.subsurface((40, 180), (40, 60)),
+                                 self.spritesheet.subsurface((80, 180), (40, 60)),
+                                 self.spritesheet.subsurface((120, 180), (40, 60)),
+                                 self.spritesheet.subsurface((160, 180), (40, 60)),
+                                 self.spritesheet.subsurface((200, 180), (40, 60)),]
+        self.image = self.sprites_direita[2]
+        self.rect = self.image.get_rect(center=(w//2, h//2))
 
     # metodo de movimentacao da classe jogador
     def movimentacao(self, tecla):
-        if tecla[pygame.K_UP] and self.pos.y > 0:
+
+        if tecla[pygame.K_UP] and self.rect.y > 0:
+            self.parado = False
+            self.direcao = 'cima'
             self.rect.y -= self.vel
 
-        if tecla[pygame.K_RIGHT] and self.pos.x < 800:
+        elif tecla[pygame.K_RIGHT] and self.rect.x < 750:
+            self.parado = False
+            self.direcao = 'direita'
             self.rect.x += self.vel
 
-        if tecla[pygame.K_DOWN] and self.pos.y < 450:
+        elif tecla[pygame.K_DOWN] and self.rect.y < 400:
+            self.parado = False
+            self.direcao = 'baixo'
             self.rect.y += self.vel
 
-        if tecla[pygame.K_LEFT] and self.pos.x > 0:
+        elif tecla[pygame.K_LEFT] and self.rect.x > 0:
+            self.parado = False
+            self.direcao = 'esquerda'
             self.rect.x -= self.vel
 
+        else:
+            self.parado = True
+
     # metodo de animacao
-    def draw_jogador(self):
-        x_pos = self.pos.x
-        y_pos = self.pos.y
-
-        self.rect = pygame.Rect(x_pos, y_pos, 20, 20)
-        pygame.draw.rect(pygame.display.get_surface(), (183, 111, 122), self.rect)
-
-    # metodo de colisao dos outros items, o parametro recebe uma lista de items
-    # e verifica se colidiu com os itens ou inimigos. prevejo que depois teirei de
-    # saber com qual objeto detectou colisao
-    def colisao_inimigos(self, enemy):
-        lista_colisao = []
-        for inimigo in enemy:
-            if self.rect.colliderect(inimigo):
-                lista_colisao.append(True)
-            else:
-                lista_colisao.append(False)
-        if True in lista_colisao:
-            self.vida -= 1
+    def animacao(self):
+        if self.parado:
+            if self.direcao == 'direita':
+                self.image = self.sprites_direita[2]
+            elif self.direcao == 'esquerda':
+                self.image = self.sprites_esquerda[0]
+            elif self.direcao == 'cima':
+                self.image = self.sprites_cima[0]
+            elif self.direcao == 'baixo':
+                self.image = self.sprites_baixo[0]
+        else:
+            self.contador += 0.5
+            if self.contador == 6:
+                self.contador = 0
+            if self.direcao == 'direita':
+                self.image = self.sprites_direita[int(self.contador)]
+            elif self.direcao == 'esquerda':
+                self.image = self.sprites_esquerda[int(self.contador)]
+            elif self.direcao == 'cima':
+                self.image = self.sprites_cima[int(self.contador)]
+            elif self.direcao == 'baixo':
+                self.image = self.sprites_baixo[int(self.contador)]
 
     def colisao_item_vel(self, item):
         if self.rect.colliderect(item):
@@ -77,17 +120,25 @@ class Jogador(pygame.sprite.Sprite):
         else:
             self.coleta_ponto = False
 
+    def colisao_flor(self, flor):
+        if self.rect.colliderect(flor):
+            self.vida -= 1
+            self.dano = True
+        else:
+            self.dano = False
+
     # metodo de atualizacao de estado de jogo
     def game_over(self):
         if self.vida <= 0:
             self.morto = True
 
     # metodo que invoca os outros metodos para atualizar o jogo
-    def update_jogador(self, inimigos, items_vel, items_vida, items_ponto, tecla):
-        self.colisao_inimigos(inimigos)
+    def update_jogador(self, items_vel, items_vida, items_ponto, flor, tecla):
         self.colisao_item_vel(items_vel)
         self.colisao_item_vida(items_vida)
         self.colisao_item_ponto(items_ponto)
+        self.colisao_flor(flor)
         self.game_over()
         self.movimentacao(tecla)
-        return self.colisao_item_vel(items_vel)
+        self.animacao()
+        self.colisao_item_vel(items_vel)
