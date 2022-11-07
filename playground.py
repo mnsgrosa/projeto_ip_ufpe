@@ -1,13 +1,13 @@
 import pygame
 from pygame.math import Vector2
+from pygame.transform import scale
 from random import randint
 from jogador import Jogador
-from bala import Bala
 from vida import Vida
 from vida import Barra_vida
 from velocidade import Velocidade
 from pontos import Pontos
-from inimigo import Inimigo
+from flor import Flor
 
 
 # Classe que ira conter todos os objetos
@@ -18,36 +18,34 @@ class Main:
         self.item_vida = Vida()
         self.item_vel = Velocidade()
         self.item_ponto = Pontos()
+        self.flor = Flor()
         self.barra_vida = Barra_vida()
-        self.inimigos = []
         self.next_move = pygame.time.get_ticks() + 100
         self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.barra_vida)
+        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto, self.flor, self.barra_vida)
 
-    def add_inimigo(self):
-        if self.inimigos.len() < 10:
-            self.inimigos.append(Inimigo())
-
-    def update(self, inimigos, items_vel, items_vida, items_ponto, tecla, morte_inimigo, pos_inimigo_morto, bala):
-        self.item_ponto.update_ponto(morte_inimigo, pos_inimigo_morto, self.jogador.ponto_coletado)
+    def update(self, items_vel, items_vida, items_ponto, posicoes_flor, tecla):
         if pygame.time.get_ticks() >= self.next_move:
             self.next_move = pygame.time.get_ticks() + 100
-            self.jogador.update_jogador(inimigos, items_vel, items_vida, items_ponto, tecla)
+            self.jogador.update_jogador(items_vel, items_vida, items_ponto, posicoes_flor, tecla)
         self.item_vida.spawn_vida(self.jogador.coleta_vida)
         self.item_vel.update_cafe(self.jogador.coleta_vel)
+        self.item_ponto.update_ponto(self.jogador.coleta_ponto)
+        self.flor.spawn_flor(self.jogador.dano)
         self.barra_vida.update_barra(self.jogador.vida)
         self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.barra_vida)
-        if self.inimigos > 0:
-            for indice, inimigo in enumerate(self.inimigos):
-                inimigo.update(self.jogador, bala)
-                if inimigo.morto:
-                    self.inimigos.pop(indice)
+        self.sprites.add(self.jogador, self.item_vida, self.item_vel, self.item_ponto, self.flor, self.barra_vida)
 
-    def draw_elementos(self, bala):
+    def draw_elementos(self):
         self.sprites.draw(self.tela)
-        for inimigo in inimigos:
-            inimigo.draw(self.jogador, bala)
+
+
+def atualiza_tela():
+    pygame.display.update()
+    screen.fill((255, 255, 255))
+    screen.blit(bg, (0, 0))
+    jogo.draw_elementos()
+    digitar_texto(f'{jogo.jogador.ponto}', (0, 0, 230), 28, (728, 10))
 
 def digitar_texto(texto, cor, tamanho, posicao):
     fonte = pygame.font.SysFont('arial', tamanho, True, False)
@@ -67,17 +65,10 @@ if __name__ == '__main__':
     bg = pygame.transform.scale(bg, (unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     logo = pygame.image.load("sprites/cingaco_logo.png")
     logo = pygame.transform.scale(logo, (500, 500))
-    logo_rect = logo.get_rect(center = ((unidade * SCREEN_WIDTH) / 2, 50))
-
-    inimigo_pos = Vector2(randint(0, (unidade * SCREEN_WIDTH) - 22), randint(0, (unidade * SCREEN_HEIGHT) - 22))
-    inimigo = pygame.Rect(inimigo_pos.x, inimigo_pos.y, 22, 22)
-    morte_inimigo = False
-    pos_inimigo_morto = (inimigo_pos.x, inimigo_pos.y)
+    logo_rect = logo.get_rect(center=((unidade * SCREEN_WIDTH) / 2, 50))
 
     screen = pygame.display.set_mode((unidade * SCREEN_WIDTH, unidade * SCREEN_HEIGHT))
     pygame.display.set_caption('CINGAÇO')
-
-    grupo_balas = pygame.sprite.Group()
 
     game = True
     tela_start = True
@@ -93,7 +84,7 @@ if __name__ == '__main__':
     som_game_over = pygame.mixer.Sound('sons/som_game_over.wav')
 
     record = 0
-    contador = 0
+    contador = 30
 
     while game:
 
@@ -132,10 +123,7 @@ if __name__ == '__main__':
         pygame.mixer.music.play()
 
         while running:
-            pygame.display.update()
-            screen.fill((255, 255, 255))
-            screen.blit(bg, (0, 0))
-            
+
             antiga_vida = jogo.jogador.vida
 
             for event in pygame.event.get():
@@ -148,34 +136,17 @@ if __name__ == '__main__':
                 tela_start = True
                 running = False
 
-            if jogo.jogador.vida < antiga_vida:
-                som_perde_vida.play()
-                morte_inimigo = True
-                pos_inimigo_morto = (inimigo_pos.x, inimigo_pos.y)
-                inimigo_pos = Vector2(randint(0, (unidade * SCREEN_WIDTH) - 22),
-                                      randint(0, (unidade * SCREEN_HEIGHT) - 22))
-                inimigo = pygame.Rect(inimigo_pos.x, inimigo_pos.y, 22, 22)
-            elif jogo.jogador.vida > antiga_vida:
-                som_ganha_vida.play()
-                morte_inimigo = False
-            else:
-                morte_inimigo = False
-
-            if contador == 30:
-                bala = jogo.jogador.atira(jogo.inimigos)
-                grupo_balas.add(bala)
-                contador = 0
-
             tecla = pygame.key.get_pressed()
-            jogo.update([inimigo], jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.lista_ponto, tecla, morte_inimigo, pos_inimigo_morto, bala)
+            jogo.update(jogo.item_vel.rect, jogo.item_vida.rect, jogo.item_ponto.rect, jogo.flor.rect, tecla)
             jogo.jogador.vel = jogo.item_vel.vel
 
+            if jogo.jogador.vida < antiga_vida:
+                som_perde_vida.play()
+            elif jogo.jogador.vida > antiga_vida:
+                som_ganha_vida.play()
+
             contador += 1
-            grupo_balas.update()
-            grupo_balas.draw(jogo.tela)
-            jogo.draw_elementos()
-            pygame.draw.rect(pygame.display.get_surface(), (250, 0, 0), inimigo)
-            digitar_texto(f'{jogo.jogador.ponto}', (0, 0, 230), 28, (728, 10))
+            atualiza_tela()
             pygame.display.flip()
             clock.tick(30)
 
