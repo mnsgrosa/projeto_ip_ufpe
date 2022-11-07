@@ -17,12 +17,12 @@ class Velocidade(pygame.sprite.Sprite):
         self.som = pygame.mixer.Sound('sons/som_velocidade.wav')
         self.som.set_volume(0.09)
         self.image = scale(pygame.image.load('sprites/sprite_cafe.png'), (50, 50))
-        self.rect = self.image.get_rect(topleft=(0, 2000))
+        self.rect = self.image.get_rect(topleft=(10, 2000))
         self.vel = self.largura_tela // 40
 
     def spawn_velocidade(self, coleta):
         if coleta:
-            self.rect.x, self.rect.y = 0, 2000
+            self.rect.x, self.rect.y = 10, 2000
             self.existe_sprite = False
         if self.existe_sprite:
             self.tempo_spawn = 0
