@@ -43,13 +43,9 @@ class Barra_vida(pygame.sprite.Sprite):
     def update_barra(self, vida):
         if vida == 3:
             self.image = self.coracao_3
-            self.rect = self.image.get_rect()
         elif vida == 2:
             self.image = self.coracao_2
-            self.rect = self.image.get_rect()
         elif vida == 1:
             self.image = self.coracao_1
-            self.rect = self.image.get_rect()
         elif vida == 0:
             self.image = self.coracao_0
-            self.rect = self.image.get_rect()
